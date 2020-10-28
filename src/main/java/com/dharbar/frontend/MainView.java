@@ -52,8 +52,8 @@ public class MainView extends VerticalLayout {
 
     private Button createRefreshButton(VerticalLayout todosList) {
         Button refreshButton = new Button("Refresh");
-        refreshButton.addClickShortcut(Key.KEY_R);
         refreshButton.addClickListener(click -> {
+            todosList.removeAll();
             gcpDatastoreService.getAllTasks().stream()
                     .map(Checkbox::new)
                     .forEach(todosList::add);
