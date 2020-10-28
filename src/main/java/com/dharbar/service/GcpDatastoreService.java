@@ -19,14 +19,21 @@ public class GcpDatastoreService implements Serializable {
         this.taskRepository = taskRepository;
     }
 
+    public List<Task> getAllTasks() {
+        return StreamSupport.stream(taskRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> findFinishedTasks() {
+        return taskRepository.findFinishedTasks();
+    }
+
     public String addTask(String task) {
-        final Task savedTask = taskRepository.save(Task.of(Instant.now().toEpochMilli(), task));
+        final Task savedTask = taskRepository.save(Task.of(Instant.now().toEpochMilli(), task, false));
         return savedTask.getTask();
     }
 
-    public List<String> getAllTasks() {
-        return StreamSupport.stream(taskRepository.findAll().spliterator(), false)
-                .map(Task::getTask)
-                .collect(Collectors.toList());
+    public void deleteTask(String taskName) {
+        taskRepository.findAllByTask(taskName).forEach(taskRepository::delete);
     }
 }
